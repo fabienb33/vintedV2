@@ -8,6 +8,7 @@ import Header from "./components/Header";
 import Login from "./containers/Login";
 import Nav from "./components/Nav";
 import Signup from "./containers/Signup";
+import Publish from "./containers/Publish";
 
 function App() {
   const [userToken, setUserToken] = useState(Cookies.get("userToken") || null);
@@ -30,13 +31,16 @@ function App() {
       <div>
         <Switch>
           <Route path="/offer/:id">
-            <Offer />
+            <Offer></Offer>
           </Route>
           <Route path="/login">
             <Login setUser={setUser} />
           </Route>
           <Route path="/Signup">
             <Signup setUser={setUser} />
+          </Route>
+          <Route path="/Publish">
+            <Publish />
           </Route>
           <Route path="/">
             <Home />

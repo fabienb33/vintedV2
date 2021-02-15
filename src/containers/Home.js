@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Hero from "../components/Hero";
+import profilPic from "../components/Vinted_profil.png";
 
 const Home = () => {
   const [data, setData] = useState();
@@ -30,18 +31,24 @@ const Home = () => {
             <Link key={offer._id} to={`/offer/${offer._id}`}>
               <div className="article">
                 <div className="avatarName">
-                  <img
-                    src={offer.owner.account.avatar.secure_url}
-                    className="clientImg"
-                    alt=""
-                  />
+                  {offer.owner.account.avatar ? (
+                    <img
+                      src={offer.owner.account.avatar.secure_url}
+                      className="clientImg"
+                      alt=""
+                    />
+                  ) : (
+                    <img src={profilPic} alt="" className="clientImg"></img>
+                  )}
                   <span>{offer.owner.account.username}</span>
                 </div>
+
                 <img
                   src={offer.product_image.secure_url}
                   className="imgArticleHome"
                   alt=""
                 />
+
                 <div className="footerArticle">
                   <span className="price">{offer.product_price} €</span>
                   <div className="taille">
