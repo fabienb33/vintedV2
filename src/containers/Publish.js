@@ -3,7 +3,7 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import { Redirect, useHistory } from "react-router-dom";
 
-const Publish = () => {
+const Publish = ({ userToken }) => {
   const token = Cookies.get("userToken");
   const history = useHistory();
   console.log(token);
@@ -16,6 +16,7 @@ const Publish = () => {
   const [brand, setBrand] = useState("");
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
+  const [city, setCity] = useState("");
   const [data, setData] = useState("");
   const [preview, setPreview] = useState("");
 
@@ -24,24 +25,23 @@ const Publish = () => {
       event.preventDefault();
 
       const formData = new FormData();
-      formData.append("product_name", title);
-      formData.append("product_description", description);
-      formData.append("product_price", price);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("price", price);
       formData.append("condition", condition);
       formData.append("brand", brand);
       formData.append("size", size);
       formData.append("color", color);
-      formData.append("secure_url", file);
+      formData.append("city", city);
+      formData.append("picture", file);
+      const token = userToken;
 
       const response = await axios.post(
         "https://lereacteur-vinted-api.herokuapp.com/offer/publish",
         formData,
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { authorization: `Bearer ${token}` } }
       );
+      console.log(response.data);
       if (response.data._id) {
         history.push(`/offer/${response.data._id}`);
       }
@@ -54,29 +54,45 @@ const Publish = () => {
   };
 
   return token ? (
-    <div className="bgFormulaire">
-      <h1 className="titleForm">Vends ton article</h1>
-      <div className="formulaire">
-        <div className="bgFormPicture">
-          <label htmlFor="file">
-            <span>toto</span>
-          </label>
-          <input
-            multiple={true}
-            id="file"
-            type="file"
-            className="dlPicture"
-            onChange={(event) => {
-              // console.log(event);
-              setFile(event.target.files[0]);
-              setPreview(URL.createObjectURL(event.target.files[0]));
-            }}
-          />
+    <form onSubmit={handleSubmit}>
+      <div className="bgFormulaire">
+        <h1 className="titleForm">Vends ton article</h1>
+
+        <div className="formulaire">
+          <p className="limitePhoto">Ajoute jusqu'à 20 photos. Voir astuces</p>
+          <div className="bgFormPicture">
+            <div className="btAddPhoto">
+              <label htmlFor="file">
+                <div className="fileBt">
+                  <p className="plusAddPhoto">+</p>
+                  <p>Ajoute des photos</p>
+                </div>
+              </label>
+
+              <input
+                multiple={true}
+                id="file"
+                type="file"
+                className="dlPicture"
+                onChange={(event) => {
+                  setFile(event.target.files[0]);
+                  setPreview(URL.createObjectURL(event.target.files[0]));
+                }}
+              />
+            </div>
+            {preview ? (
+              <img src={preview} className="preview" />
+            ) : (
+              <span></span>
+            )}
+          </div>
         </div>
-        <form onSubmit={handleSubmit}>
+
+        <div className="formulaire">
           <div className="inputVendre">
             <p className="titlesPublish">Titre</p>
             <input
+              placeholder="ex : Chemise Sézame vert"
               type="text"
               className="inputVendre"
               onChange={(event) => {
@@ -84,56 +100,99 @@ const Publish = () => {
               }}
             />
           </div>
-          {preview ? <img src={preview} className="preview" /> : <span></span>}
-          <p className="titlesPublish">Décris ton article</p>
-          <input
-            type="text"
-            onChange={(event) => {
-              setDescription(event.target.value);
-            }}
-          />
-          <p className="titlesPublish">Prix</p>
-          <input
-            type="text"
-            onChange={(event) => {
-              setPrice(event.target.value);
-            }}
-          />
-          <p className="titlesPublish">Etat</p>
-          <input
-            type="text"
-            onChange={(event) => {
-              setCondition(event.target.value);
-            }}
-          />
-          <p className="titlesPublish">Marque</p>
-          <input
-            type="text"
-            onChange={(event) => {
-              setBrand(event.target.value);
-            }}
-          />
-          <p className="titlesPublish">Taille</p>
-          <input
-            type="text"
-            onChange={(event) => {
-              setSize(event.target.value);
-            }}
-          />
-          <p className="titlesPublish">Couleur</p>
-          <input
-            type="text"
-            onChange={(event) => {
-              setColor(event.target.value);
-            }}
-          />
 
-          <br />
+          <div className="inputVendre1">
+            <p className="titlesPublish">Décris ton article</p>
+            <input
+              placeholder="ex : Porté quelsues fois, taille correctement"
+              className="inputVendre1"
+              type="text"
+              onChange={(event) => {
+                setDescription(event.target.value);
+              }}
+            />
+          </div>
+        </div>
 
-          <button type="submit">Envoyer</button>
-        </form>
+        <div className="formulaire">
+          <div className="inputVendre">
+            <p className="titlesPublish">Etat</p>
+            <input
+              className="inputVendre"
+              type="text"
+              onChange={(event) => {
+                setCondition(event.target.value);
+              }}
+            />
+          </div>
+          <div className="inputVendre">
+            <p className="titlesPublish">Marque</p>
+            <input
+              className="inputVendre"
+              type="text"
+              onChange={(event) => {
+                setBrand(event.target.value);
+              }}
+            />
+          </div>
+
+          <div className="inputVendre">
+            <p className="titlesPublish">Taille</p>
+            <input
+              className="inputVendre"
+              type="text"
+              onChange={(event) => {
+                setSize(event.target.value);
+              }}
+            />
+          </div>
+          <div className="inputVendre">
+            <p className="titlesPublish">Pays</p>
+            <input
+              className="inputVendre"
+              type="text"
+              onChange={(event) => {
+                setCity(event.target.value);
+              }}
+            />
+          </div>
+          <div className="inputVendre">
+            <p className="titlesPublish">Couleur</p>
+            <input
+              className="inputVendre"
+              type="text"
+              onChange={(event) => {
+                setColor(event.target.value);
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="formulaire">
+          <div className="inputVendre">
+            <p className="titlesPublish">Prix</p>
+            <input
+              placeholder="0,00€"
+              className="inputVendre"
+              type="text"
+              onChange={(event) => {
+                setPrice(event.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <p className="alertVendeur">
+          Un vendeur professionnel se faisant passer pour un consommateur ou un
+          non-professionnel sur Vinted encourt les sanctions prévues à l'Article
+          L. 132-2 du Code de la Consommation.
+        </p>
+        <div className="bgBtSubmitOffer">
+          <button type="submit" className="btSubmitOffer">
+            Envoyer
+          </button>
+        </div>
       </div>
-    </div>
+    </form>
   ) : (
     <Redirect to="/login" />
   );
