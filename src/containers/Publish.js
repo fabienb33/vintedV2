@@ -16,7 +16,7 @@ const Publish = ({ userToken }) => {
   const [brand, setBrand] = useState("");
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
-  const [city, setCity] = useState("");
+  const [country, setCountry] = useState("");
   const [data, setData] = useState("");
   const [preview, setPreview] = useState("");
 
@@ -32,7 +32,7 @@ const Publish = ({ userToken }) => {
       formData.append("brand", brand);
       formData.append("size", size);
       formData.append("color", color);
-      formData.append("city", city);
+      formData.append("city", country);
       formData.append("picture", file);
       const token = userToken;
 
@@ -54,10 +54,9 @@ const Publish = ({ userToken }) => {
   };
 
   return token ? (
-    <form onSubmit={handleSubmit}>
-      <div className="bgFormulaire">
-        <h1 className="titleForm">Vends ton article</h1>
-
+    <div className="bgFormulaire">
+      <h1 className="titleForm">Vends ton article</h1>
+      <form onSubmit={handleSubmit}>
         <div className="formulaire">
           <p className="limitePhoto">Ajoute jusqu'à 20 photos. Voir astuces</p>
           <div className="bgFormPicture">
@@ -70,6 +69,7 @@ const Publish = ({ userToken }) => {
               </label>
 
               <input
+                required
                 multiple={true}
                 id="file"
                 type="file"
@@ -90,34 +90,35 @@ const Publish = ({ userToken }) => {
 
         <div className="formulaire">
           <div className="inputVendre">
-            <p className="titlesPublish">Titre</p>
+            <label className="titlesPublish">Titre</label>
             <input
-              placeholder="ex : Chemise Sézame vert"
+              required
+              onChange={(event) => setTitle(event.target.value)}
               type="text"
               className="inputVendre"
-              onChange={(event) => {
-                setTitle(event.target.value);
-              }}
+              placeholder="ex : Chemise Sézame vert"
+              required
             />
           </div>
 
           <div className="inputVendre1">
-            <p className="titlesPublish">Décris ton article</p>
+            <label className="titlesPublish">Décris ton article</label>
             <input
-              placeholder="ex : Porté quelsues fois, taille correctement"
-              className="inputVendre1"
+              required
+              onChange={(event) => setDescription(event.target.value)}
+              className="inputVendre"
               type="text"
-              onChange={(event) => {
-                setDescription(event.target.value);
-              }}
+              placeholder="ex : Porté quelques fois, taille correctement"
+              required
             />
           </div>
         </div>
 
         <div className="formulaire">
           <div className="inputVendre">
-            <p className="titlesPublish">Etat</p>
+            <label className="titlesPublish">Etat</label>
             <input
+              required
               className="inputVendre"
               type="text"
               onChange={(event) => {
@@ -125,9 +126,11 @@ const Publish = ({ userToken }) => {
               }}
             />
           </div>
+
           <div className="inputVendre">
-            <p className="titlesPublish">Marque</p>
+            <label className="titlesPublish">Marque</label>
             <input
+              required
               className="inputVendre"
               type="text"
               onChange={(event) => {
@@ -137,8 +140,9 @@ const Publish = ({ userToken }) => {
           </div>
 
           <div className="inputVendre">
-            <p className="titlesPublish">Taille</p>
+            <label className="titlesPublish">Taille</label>
             <input
+              required
               className="inputVendre"
               type="text"
               onChange={(event) => {
@@ -146,19 +150,23 @@ const Publish = ({ userToken }) => {
               }}
             />
           </div>
+
           <div className="inputVendre">
-            <p className="titlesPublish">Pays</p>
+            <label className="titlesPublish">Pays</label>
             <input
+              required
               className="inputVendre"
               type="text"
               onChange={(event) => {
-                setCity(event.target.value);
+                setCountry(event.target.value);
               }}
             />
           </div>
+
           <div className="inputVendre">
-            <p className="titlesPublish">Couleur</p>
+            <label className="titlesPublish">Couleur</label>
             <input
+              required
               className="inputVendre"
               type="text"
               onChange={(event) => {
@@ -170,14 +178,14 @@ const Publish = ({ userToken }) => {
 
         <div className="formulaire">
           <div className="inputVendre">
-            <p className="titlesPublish">Prix</p>
+            <label className="titlesPublish">Prix</label>
             <input
+              required
+              onChange={(event) => setPrice(event.target.value)}
+              type="text"
               placeholder="0,00€"
               className="inputVendre"
-              type="text"
-              onChange={(event) => {
-                setPrice(event.target.value);
-              }}
+              required
             />
           </div>
         </div>
@@ -191,8 +199,8 @@ const Publish = ({ userToken }) => {
             Envoyer
           </button>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   ) : (
     <Redirect to="/login" />
   );
